@@ -46,6 +46,8 @@ while 1:
         tcpCliSock.send("Content-Type:text/html\r\n")
         
         # Fill in start.
+        for i in range(len(outputdata)):
+            tcpCliSock.send(outputdata[i].encode())
         # Fill in end.  
 
         print('Read from cache') 
