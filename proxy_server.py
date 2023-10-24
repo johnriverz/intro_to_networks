@@ -5,10 +5,18 @@ if len(sys.argv) <= 1:
     print('Usage : "python ProxyServer.py server_ip"\n[server_ip : It is the IP Address Of Proxy Server')
     sys.exit(2)
 
+SERVER = sys.argv[1]
+PORT = 8080
+ADDR = (SERVER, PORT)
+DISCONNECT = '!DISCONNECT'
+BUFSIZ = 1024
+
 # Create a server socket, bind it to a port and start listening
 tcpSerSock = socket(AF_INET, SOCK_STREAM)
 
 # Fill in start.
+tcpSerSock.bind(ADDR)
+tcpSerSock.listen(5)
 # Fill in end.
 
 while 1:
@@ -16,33 +24,41 @@ while 1:
     print('Ready to serve...')
     tcpCliSock, addr = tcpSerSock.accept()
     print('Received a connection from:', addr)
-    message = 44 # FILL IN START FILL IN END
+    message = tcpCliSock.recv(BUFSIZ).decode() # FILL IN START FILL IN END
     print(message)
+
     # Extract the filename from the given message
-    print(message.split()[1])
+    #print(message.split()[1])
     filename = message.split()[1].partition("/")[2]
-    print(filename)
+    #print(filename)
     fileExist = "false"
     filetouse = "/" + filename
     print(filetouse)
+
     try:
         # Check wether the file exist in the cache
         f = open(filetouse[1:], "r")
         outputdata = f.readlines()
         fileExist = "true"
+
         # ProxyServer finds a cache hit and generates a response message
         tcpCliSock.send("HTTP/1.0 200 OK\r\n")
         tcpCliSock.send("Content-Type:text/html\r\n")
+        
         # Fill in start.
-        # Fill in end.
+        # Fill in end.  
+
         print('Read from cache') 
+
     # Error handling for file not found in cache
     except IOError:
         if fileExist == "false": 
+
             # Create a socket on the proxyserver
-            c = "fill in start fill in end"
+            c = socket(AF_INET, SOCK_STREAM)
             hostn = filename.replace("www.","",1)
             print(hostn)
+
             try:
                 # Connect to the socket to port 80
                 # Fill in start.
@@ -64,7 +80,7 @@ while 1:
         else:
             # HTTP response message for file not found
             # Fill in start.
-            print("WIP")
+            print("fill in here")
             # Fill in end.
     # Close the client and the server sockets 
     tcpCliSock.close() 
