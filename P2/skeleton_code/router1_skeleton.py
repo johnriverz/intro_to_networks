@@ -1,8 +1,10 @@
-import socket
+from socket import *
 import sys
 import time
 import os
 import glob
+
+PORT=8080
 
 
 # Helper Functions
@@ -10,13 +12,15 @@ import glob
 # The purpose of this function is to set up a socket connection.
 def create_socket(host, port):
     # 1. Create a socket.
-    ## soc = ...
+    soc = socket(AF_INET, SOCK_STREAM)
+
     # 2. Try connecting the socket to the host and port.
     try:
-        ## ...
+        soc.connect(('example.com', 80))
     except:
         print("Connection Error to", port)
         sys.exit()
+        
     # 3. Return the connected socket.
     return soc
 
@@ -25,6 +29,7 @@ def create_socket(host, port):
 def read_csv(path):
     # 1. Open the file for reading.
     table_file = open(path, "r")
+
     # 2. Store each line.
     table = table_file.readlines()
     # 3. Create an empty list to store each processed row.
@@ -57,6 +62,7 @@ def find_default_gateway(table):
 # In other words, this table will help the router answer the question:
 # Given this packet's destination IP, which interface (i.e., port) should I send it out on?
 def generate_forwarding_table_with_range(table):
+    pass
     # 1. Create an empty list to store the new forwarding table.
     new_table = []
     # 2. Traverse the old forwarding table, row by row,
