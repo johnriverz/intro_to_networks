@@ -89,18 +89,16 @@ def generate_forwarding_table_with_range(table):
             # 5. Convert both strings into their binary representations.
             network_dst_bin = ip_to_bin(network_dst_string)
             netmask_bin = ip_to_bin(netmask_string)
-            
-            # print(network_dst_bin)
-            # print(netmask_bin)
 
             # 6. Find the IP range.
             ip_range = find_ip_range(network_dst_bin, netmask_bin)
 
             # 7. Build the new row.
-            new_row = ""
+            new_row = [network_dst_string, netmask_string, ip_range[0], ip_range[1], row[3]]
 
             # 8. Append the new row to new_table.
             new_table.append(new_row)
+            
     # 9. Return new_table.
     return new_table
 
