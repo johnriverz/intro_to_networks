@@ -143,23 +143,6 @@ def ip_to_bin(ip):
     return ip_int
 
 
-def ip_to_bin3(ip):
-    # Split the IP into octets and convert each octet to an integer
-    ip_octets = [int(octet) for octet in ip.split(".")]
-
-    # Perform bitwise shifting to create the 32-bit representation of the IP
-    ip_int = (
-        (ip_octets[0] << 24) + (ip_octets[1] << 16) + (ip_octets[2] << 8) + ip_octets[3]
-    )
-
-    # print(ip_int, "dog3", type(ip_int))
-    return ip_int
-
-
-def ip_to_bin2(ip):
-    return bin("".join(format(int(x), "08b") for x in ip.split(".")))
-
-
 # The purpose of this function is to find the range of IPs inside a given a destination IP address/subnet mask pair.
 def find_ip_range(network_dst, netmask):
     # print(bin(network_dst), bin(netmask))
@@ -180,21 +163,6 @@ def find_ip_range(network_dst, netmask):
 
     # 4. Return a list containing the minimum and maximum IP in the range.
     # print([min_ip, max_ip], "dog1")
-    return [min_ip, max_ip]
-
-
-def find_ip_range2(network_dst, netmask):
-    # Perform a bitwise AND on the network destination and netmask
-    # to get the minimum IP address in the range.
-    min_ip = network_dst & netmask
-
-    # Calculate the maximum IP address in the range.
-    # To obtain the maximum IP in the range, apply a bitwise OR
-    # between the network destination and the bitwise NOT of the netmask.
-    max_ip = network_dst | bit_not(netmask)
-
-    # Return a list containing the minimum and maximum IP in the range.
-    # print([min_ip, max_ip], "dog2")
     return [min_ip, max_ip]
 
 
@@ -300,6 +268,7 @@ def main():
         if dst_port == "8002":
             print("sending packet", new_packet, "to Router 2")
             write_to_file("output/sent_by_router_1.txt", new_packet, "2")
+            print(new_packet)
             interface2.send(new_packet.encode())
         elif dst_port == "8004":
             print("sending packet", new_packet, "to Router 4")
