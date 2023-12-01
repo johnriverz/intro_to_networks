@@ -138,17 +138,14 @@ def ip_to_bin(ip):
     ip_int = int(ip_bin_string, 2)
 
     # 10. Return the binary representation of this int.
-    # print(ip_int, "dog1", type(ip_int))
     return ip_int
 
 
 # The purpose of this function is to find the range of IPs inside a given a destination IP address/subnet mask pair.
 def find_ip_range(network_dst, netmask):
-    # print(bin(network_dst), bin(netmask))
     # 1. Perform a bitwise AND on the network destination and netmask
     # to get the minimum IP address in the range.
     min_ip = network_dst & netmask
-    # print(bin(min_ip))
 
     # 2. Perform a bitwise NOT on the netmask
     # to get the number of total IPs in this range.
@@ -161,7 +158,6 @@ def find_ip_range(network_dst, netmask):
     max_ip = min_ip + total_ips
 
     # 4. Return a list containing the minimum and maximum IP in the range.
-    # print([min_ip, max_ip], "dog1")
     return [min_ip, max_ip]
 
 
@@ -185,7 +181,7 @@ def receive_packet(connection, max_buffer_size):
 
     # 3. Append the packet to received_by_router_2.txt.
     print("received packet", decoded_packet)
-    write_to_file("output/received_by_router_2.txt", decoded_packet)
+    write_to_file("output/received_by_router_3.txt", decoded_packet)
 
     # 4. Split the packet by the delimiter.
     packet = decoded_packet.split(" ")
@@ -236,7 +232,7 @@ def write_to_file(path, packet_to_write, send_to_router=None):
 def start_server():
     # 1. Create a socket.
     host = "127.0.0.1"
-    port = 8002
+    port = 8003
     soc = socket(AF_INET, SOCK_STREAM)
 
     soc.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -298,8 +294,6 @@ def processing_thread(
     max_buffer_size=5120,
 ):
     # 1. Connect to the appropriate sending ports (based on the network topology diagram).
-    interface3 = create_socket("localhost", 8003)
-    interface4 = create_socket("localhost", 8004)
 
     # 2. Continuously process incoming packets
     while True:
@@ -327,7 +321,7 @@ def processing_thread(
         # check new_ttl <= 0
         if new_ttl <= 0 and (destinationIP != "127.0.0.1"):
             print(f"DISCARD: {new_packet} TTL expired.")
-            write_to_file("output/discarded_by_router_1.txt", new_packet)
+            write_to_file("output/discarded_by_router_3.txt", new_packet)
             continue
 
         # 7. Convert the destination IP into an integer for comparison purposes.
@@ -345,20 +339,12 @@ def processing_thread(
         # (a) send the new packet to the appropriate port (and append it to sent_by_router_2.txt),
         # (b) append the payload to out_router_2.txt without forwarding because this router is the last hop, or
         # (c) append the new packet to discarded_by_router_2.txt and do not forward the new packet
-        if dst_port == "8003":
-            print("sending packet", new_packet, "to Router 3")
-            write_to_file("output/sent_by_router_2.txt", new_packet, "3")
-            interface3.send(new_packet.encode())
-        elif dst_port == "8004":
-            print("sending packet", new_packet, "to Router 4")
-            write_to_file("output/sent_by_router_2.txt", new_packet, "4")
-            interface4.send(new_packet.encode())
-        elif dst_port == "127.0.0.1":
+        if dst_port == "127.0.0.1":
             print("OUT:", payload)
-            write_to_file("output/out_router_2.txt")
+            write_to_file("output/out_router_3.txt")
         else:
             print("DISCARD:", new_packet)
-            write_to_file("output/discarded_by_router_2.txt", new_packet)
+            write_to_file("output/discarded_by_router_3.txt", new_packet)
 
 
 # Main Program
