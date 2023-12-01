@@ -117,6 +117,7 @@ def ip_to_bin(ip):
     # 3. Traverse the IP, octet by octet,
     for octet in ip_octets:
         # 4. and convert the octet to an int,
+        octet = octet.strip(",")
         int_octet = int(octet)
 
         # 5. convert the decimal int to binary,
@@ -181,7 +182,7 @@ def receive_packet(connection, max_buffer_size):
         print("The packet size is greater than expected", packet_size)
 
     # 3. Decode the packet and strip any trailing whitespace.
-    decoded_packet = received_packet.decode().strip()
+    decoded_packet = received_packet.decode().rstrip()
 
     # 3. Append the packet to received_by_router_2.txt.
     print("received packet", decoded_packet)
@@ -305,14 +306,13 @@ def processing_thread(
     while True:
         # 3. Receive the incoming packet, process it, and store its list representation
         packet = receive_packet(connection, max_buffer_size)
+        print(packet)
 
         # 4. If the packet is empty (Router 1 has finished sending all packets), break out of the processing loop
-        if not packet:
+        if not packet or packet == ['']:
             break
 
         # 5. Store the source IP, destination IP, payload, and TTL.
-        packet = packet[0].split(",")
-
         sourceIP = packet[0]
         destinationIP = packet[1]
         payload = packet[2]
@@ -327,7 +327,7 @@ def processing_thread(
         # check new_ttl <= 0
         if new_ttl <= 0 and (destinationIP != "127.0.0.1"):
             print(f"DISCARD: {new_packet} TTL expired.")
-            write_to_file("output/discarded_by_router_1.txt", new_packet)
+            write_to_file("output/discarded_by_router_2.txt", new_packet)
             continue
 
         # 7. Convert the destination IP into an integer for comparison purposes.
@@ -355,7 +355,7 @@ def processing_thread(
             interface4.send(new_packet.encode())
         elif dst_port == "127.0.0.1":
             print("OUT:", payload)
-            write_to_file("output/out_router_2.txt")
+            write_to_file("output/out_router_2.txt", payload)
         else:
             print("DISCARD:", new_packet)
             write_to_file("output/discarded_by_router_2.txt", new_packet)

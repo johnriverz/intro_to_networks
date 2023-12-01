@@ -228,7 +228,7 @@ def main():
 
     # 5. Read in and store the packets.
     # packets_table = read_csv("input/packets.csv")
-    packets_table = read_csv("Example Program 2 Input and Output/packets_test.csv")
+    packets_table = read_csv("input/packets.csv")
 
     # 6. For each packet,
     for packet in packets_table:
