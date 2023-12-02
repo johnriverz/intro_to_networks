@@ -118,6 +118,7 @@ def ip_to_bin(ip):
     # 3. Traverse the IP, octet by octet,
     for octet in ip_octets:
         # 4. and convert the octet to an int,
+        octet = octet.strip(",")
         int_octet = int(octet)
 
         # 5. convert the decimal int to binary,
@@ -149,7 +150,6 @@ def find_ip_range(network_dst, netmask):
     # 1. Perform a bitwise AND on the network destination and netmask
     # to get the minimum IP address in the range.
     min_ip = network_dst & netmask
-    # print(bin(min_ip))
 
     # 2. Perform a bitwise NOT on the netmask
     # to get the number of total IPs in this range.
@@ -245,7 +245,7 @@ def main():
         new_packet = f"{sourceIP}, {destinationIP}, {payload}, {str(new_ttl)}"
 
         # check new_ttl < 0
-        if new_ttl <= 0 and (destinationIP != "127.0.0.1"):
+        if new_ttl < 0 and (destinationIP != "127.0.0.1"):
             print(f"DISCARD: {new_packet} TTL expired.")
             write_to_file("output/discarded_by_router_1.txt", new_packet)
             continue
@@ -268,7 +268,6 @@ def main():
         if dst_port == "8002":
             print("sending packet", new_packet, "to Router 2")
             write_to_file("output/sent_by_router_1.txt", new_packet, "2")
-            print(new_packet)
             interface2.send(new_packet.encode())
         elif dst_port == "8004":
             print("sending packet", new_packet, "to Router 4")

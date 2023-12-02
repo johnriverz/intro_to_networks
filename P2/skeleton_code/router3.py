@@ -185,7 +185,7 @@ def receive_packet(connection, max_buffer_size):
     write_to_file("output/received_by_router_3.txt", decoded_packet)
 
     # 4. Split the packet by the delimiter.
-    packet = decoded_packet.split(" ")
+    packet = decoded_packet.split(",")
 
     # 5. Return the list representation of the packet.
     return packet
@@ -300,10 +300,9 @@ def processing_thread(
     while True:
         # 3. Receive the incoming packet, process it, and store its list representation
         packet = receive_packet(connection, max_buffer_size)
-        print(packet)
 
         # 4. If the packet is empty (Router 1 has finished sending all packets), break out of the processing loop
-        if not packet or packet == ['']:
+        if not packet or packet == [""]:
             break
 
         # 5. Store the source IP, destination IP, payload, and TTL.
@@ -319,7 +318,7 @@ def processing_thread(
         new_packet = f"{sourceIP}, {destinationIP}, {payload}, {str(new_ttl)}"
 
         # check new_ttl <= 0
-        if new_ttl <= 0 and (destinationIP != "127.0.0.1"):
+        if new_ttl < 0 and (destinationIP != "127.0.0.1"):
             print(f"DISCARD: {new_packet} TTL expired.")
             write_to_file("output/discarded_by_router_3.txt", new_packet)
             continue
